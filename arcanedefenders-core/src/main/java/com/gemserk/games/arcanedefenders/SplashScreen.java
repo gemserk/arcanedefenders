@@ -91,6 +91,10 @@ public class SplashScreen extends ScreenAdapter {
 		spriteBatch.end();
 
 		splashAnimation.update(delta * 1000);
+		
+		if (splashAnimation.isFinished()) 
+			game.setScreen(new GameScreen(game));
+		
 	}
 
 	@Override
