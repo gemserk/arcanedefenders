@@ -1,4 +1,4 @@
-package com.gemserk.games.facehunt;
+package com.gemserk.games.arcanedefenders;
 
 import android.os.Bundle;
 
