@@ -1,6 +1,6 @@
 package com.gemserk.games.arcanedefenders;
 
-import java.util.ArrayList;
+import java.util.Random;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -11,12 +11,14 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.entities.Defender;
+import com.gemserk.games.arcanedefenders.entities.FallingElement;
+import com.gemserk.games.arcanedefenders.entities.Spawner;
 
 public class GameScreen extends ScreenAdapter {
 
 	private final Game game;
 
-	ArrayList<Defender> defenders;
+	World world = new World();
 
 	private SpriteBatch spriteBatch;
 
@@ -38,9 +40,9 @@ public class GameScreen extends ScreenAdapter {
 		System.out.println(part);
 		System.out.println(midPart);
 
-		defenders = new ArrayList<Defender>();
-
 		int xStart = part - midPart;
+
+		Random random = new Random();
 
 		for (int i = 0; i < n; i++) {
 
@@ -58,7 +60,16 @@ public class GameScreen extends ScreenAdapter {
 			defender.setSize(new Vector2(128, 128));
 			defender.setSprite(sprite);
 
-			defenders.add(defender);
+			world.defenders.add(defender);
+
+			Spawner spawner = new Spawner();
+			spawner.setPosition(new Vector2(x, height + 10));
+			spawner.setWorld(world);
+			spawner.setTexture(texture);
+			spawner.setRandom(random);
+			spawner.resetSpawnTimer();
+
+			world.spawners.add(spawner);
 
 			xStart += part;
 
@@ -76,17 +87,42 @@ public class GameScreen extends ScreenAdapter {
 
 		spriteBatch.begin();
 
-		for (int i = 0; i < defenders.size(); i++) {
+		for (int i = 0; i < world.defenders.size(); i++) {
 
-			Defender defender = defenders.get(i);
+			Defender defender = world.defenders.get(i);
 
 			Vector2 position = defender.getPosition();
 			Vector2 size = defender.getSize();
+
 			Sprite sprite = defender.getSprite();
 
 			sprite.setSize(size.x, size.y);
 			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
 			sprite.draw(spriteBatch);
+
+		}
+
+		for (int i = 0; i < world.spawners.size(); i++) {
+
+			Spawner spawner = world.spawners.get(i);
+			spawner.update(delta);
+
+		}
+
+		for (int i = 0; i < world.fallingElements.size(); i++) {
+
+			FallingElement fallingElement = world.fallingElements.get(i);
+
+			Vector2 position = fallingElement.getPosition();
+			Vector2 size = fallingElement.getSize();
+
+			Sprite sprite = fallingElement.getSprite();
+
+			sprite.setSize(size.x, -size.y);
+			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
+			sprite.draw(spriteBatch);
+
+			position.y -= 50 * delta;
 
 		}
 
