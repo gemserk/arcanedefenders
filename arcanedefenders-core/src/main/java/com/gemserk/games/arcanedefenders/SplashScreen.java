@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.animation4j.timeline.TimelineAnimationBuilder;
@@ -17,8 +19,6 @@ import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
 public class SplashScreen extends ScreenAdapter {
 
 	private final Game game;
-
-	private final Texture logo;
 
 	private SpriteBatch spriteBatch;
 
@@ -34,9 +34,15 @@ public class SplashScreen extends ScreenAdapter {
 
 	private SynchrnonizedAnimation splashAnimation;
 
+	private Sprite sprite;
+
 	public SplashScreen(Game game) {
 		this.game = game;
-		this.logo = new Texture(Gdx.files.internal("data/logo-gemserk-512x128-white.png"));
+		
+		Texture logo = new Texture(Gdx.files.internal("data/logo-gemserk-512x128-white.png"));
+		logo.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		this.sprite = new Sprite(logo);
+		
 		this.spriteBatch = new SpriteBatch();
 
 		ObjectSynchronizer objectSynchronizer = new ReflectionObjectSynchronizer();
@@ -69,8 +75,19 @@ public class SplashScreen extends ScreenAdapter {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		spriteBatch.begin();
-		spriteBatch.setColor(color);
-		spriteBatch.draw(logo, centerX - logo.getWidth() / 2, centerY - logo.getHeight() / 2, 0, 0, logo.getWidth(), logo.getHeight());
+
+		Texture logo = sprite.getTexture();
+		
+		float aspect = (float) logo.getWidth() / (float) logo.getHeight();
+		float newWidth = Gdx.graphics.getWidth() - 50;
+		float newHeight = newWidth / aspect;
+
+		sprite.setColor(color);
+		sprite.setPosition(centerX - newWidth / 2, centerY - newHeight / 2);
+		sprite.setSize(newWidth, newHeight);
+
+		sprite.draw(spriteBatch);
+
 		spriteBatch.end();
 
 		splashAnimation.update(delta * 1000);
@@ -83,7 +100,7 @@ public class SplashScreen extends ScreenAdapter {
 
 	@Override
 	public void dispose() {
-		this.logo.dispose();
+		this.sprite.getTexture().dispose();
 	}
 
 }

@@ -5,6 +5,6 @@ import com.gemserk.games.arcanedefenders.ArcaneDefendersGame;
 
 public class ArcaneDefendersDesktopApplication {
 	public static void main (String[] argv) {
-		new LwjglApplication(new ArcaneDefendersGame(), "Arcane Defenders", 800, 480, false);
+		new LwjglApplication(new ArcaneDefendersGame(), "Arcane Defenders", 480, 800, false);
 	}
 }

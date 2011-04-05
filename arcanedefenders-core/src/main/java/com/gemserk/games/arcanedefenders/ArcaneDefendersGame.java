@@ -10,9 +10,12 @@ public class ArcaneDefendersGame extends Game {
 	
 	@Override
 	public void create() {
+		
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
+		
 		setScreen(new SplashScreen(this));
+		
 	}
 
 }
