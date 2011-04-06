@@ -13,9 +13,11 @@
 
 	<name>Arcane Defenders - Core Classes</name>
 	<description>Arcane Defenders - Core Classes</description>
-	
+
 	<properties>
 		<animation4j.version>0.0.10</animation4j.version>
+		<artemis.version>0.0.1-GEMSERK-SNAPSHOT</artemis.version>
+		<componentsengine.version>0.0.8</componentsengine.version>
 	</properties>
 
 	<dependencies>
@@ -44,11 +46,23 @@
 			<artifactId>gdx</artifactId>
 			<version>${libgdxversion}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.gemserk.animation4j</groupId>
 			<artifactId>animation4j-core</artifactId>
 			<version>${animation4j.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gamadu.artemis</groupId>
+			<artifactId>artemis</artifactId>
+			<version>${artemis.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.gemserk.componentsengine</groupId>
+			<artifactId>core</artifactId>
+			<version>${componentsengine.version}</version>
 		</dependency>
 		
 	</dependencies>
