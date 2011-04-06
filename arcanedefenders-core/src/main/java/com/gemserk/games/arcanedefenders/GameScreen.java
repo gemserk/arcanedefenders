@@ -17,6 +17,7 @@ import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
 import com.gemserk.games.arcanedefenders.artemis.systems.AllGameLogicSystem;
+import com.gemserk.games.arcanedefenders.artemis.systems.HierarchySystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
@@ -42,6 +43,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private AllGameLogicSystem allGameLogicSystem;
 
+	private HierarchySystem hierarchySystem;
+
 	public GameScreen(Game game) {
 		this.game = game;
 
@@ -61,6 +64,7 @@ public class GameScreen extends ScreenAdapter {
 		movementSystem = new MovementSystem();
 		spawnerSystem = new SpawnerSystem();
 		allGameLogicSystem = new AllGameLogicSystem();
+		hierarchySystem = new HierarchySystem();
 
 		world = new World();
 		
@@ -69,6 +73,7 @@ public class GameScreen extends ScreenAdapter {
 		world.getSystemManager().setSystem(movementSystem);
 		world.getSystemManager().setSystem(spawnerSystem);
 		world.getSystemManager().setSystem(allGameLogicSystem);
+		world.getSystemManager().setSystem(hierarchySystem);
 		
 		world.getSystemManager().initializeAll();
 
@@ -105,8 +110,11 @@ public class GameScreen extends ScreenAdapter {
 
 				SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
 
-				entityFactory.defender(position, size, sprite, elementType);
-				entityFactory.typeEntity(position, elementType);
+				Entity defender = entityFactory.defender(position, size, sprite, elementType);
+				
+				SimpleProperty<Entity> owner = new SimpleProperty<Entity>(defender);
+				
+				entityFactory.typeEntity(position, elementType, owner);
 			}
 
 			// build the falling elements spawners
@@ -126,8 +134,11 @@ public class GameScreen extends ScreenAdapter {
 						
 						SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
 
-						entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), elementType);
-						entityFactory.typeEntity(position, elementType);
+						Entity fallingElement = entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), elementType);
+						
+						SimpleProperty<Entity> owner = new SimpleProperty<Entity>(fallingElement);
+						
+						entityFactory.typeEntity(position, elementType, owner);
 
 						return super.build();
 					}
@@ -167,6 +178,7 @@ public class GameScreen extends ScreenAdapter {
 		textRendererSystem.process();
 		spawnerSystem.process();
 		allGameLogicSystem.process();
+		hierarchySystem.process();
 
 		spriteBatch.end();
 		

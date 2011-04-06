@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
+import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.entities.Tags;
 
@@ -20,10 +21,16 @@ public class AllGameLogicSystem extends EntitySystem {
 	@Override
 	protected void processEntities(ImmutableBag<Entity> entities) {
 		
+		processInput();
+		processRPS();
+		
+	}
+
+	protected void processInput() {
 		if (!Gdx.input.justTouched())
 			return;
 		
-		entities = world.getGroupManager().getEntities(Tags.Defender);
+		ImmutableBag<Entity> entities = world.getGroupManager().getEntities(Tags.Defender);
 		
 		int x = Gdx.input.getX();
 		int y = Gdx.graphics.getHeight() - Gdx.input.getY();
@@ -48,15 +55,83 @@ public class AllGameLogicSystem extends EntitySystem {
 			if (yDistance > size.y)
 				continue;
 			
-			int index = getElementTypeIndex(elementTypeComponent.getElementType());
-			int nextIndex = index +1;
-			if (nextIndex >= ElementType.values().length) 
-				nextIndex = 0;
+			int nextIndex = getNextElementTypeIndex(elementTypeComponent.getElementType());
 			elementTypeComponent.setElementType(ElementType.values()[nextIndex]);
 			
 		}
 	}
+
+	protected void processRPS() {
+		
+		ImmutableBag<Entity> defenders = world.getGroupManager().getEntities(Tags.Defender);
+		ImmutableBag<Entity> fallingElements = world.getGroupManager().getEntities(Tags.FallingElement);
+		
+		if (fallingElements == null || fallingElements.size() <= 0)
+			return;
+		
+		if (defenders == null || defenders.size() <= 0)
+			return;
+		
+		for (int i = 0; i < defenders.size(); i++) {
+			
+			Entity defender = defenders.get(i);
+			
+			SpatialComponent spatialComponent = defender.getComponent(SpatialComponent.class);
+			ElementTypeComponent elementTypeComponent = defender.getComponent(ElementTypeComponent.class);
+			
+			for (int j = 0; j < fallingElements.size(); j++) {
+				
+				Entity fallingElement = fallingElements.get(j);
+				
+				SpatialComponent fallingElementSpatialComponent = fallingElement.getComponent(SpatialComponent.class);
+				ElementTypeComponent fallingElementelementTypeComponent = fallingElement.getComponent(ElementTypeComponent.class);
+				
+				if (fallingElementSpatialComponent.getPosition().dst(spatialComponent.getPosition()) > 32) 
+					continue;
+
+				// process RPS
+				
+				ElementType defenderElementType = elementTypeComponent.getElementType();
+				ElementType fallingElementElementType = fallingElementelementTypeComponent.getElementType();
+
+				int compare = compareElementTypes(defenderElementType, fallingElementElementType);
+				
+				if (compare == -1) {
+					world.deleteEntity(defender);
+				} else if (compare == 1) { 
+					world.deleteEntity(fallingElement);
+				} else {
+					
+					MovementComponent movementComponent = fallingElement.getComponent(MovementComponent.class);
+					movementComponent.getVelocity().set(0,0);
+					
+				}
+				
+			}
+			
+			
+		}
+	}
 	
+	private int compareElementTypes(ElementType defenderElementType, ElementType fallingElementElementType) {
+		
+		if (defenderElementType.equals(fallingElementElementType))
+			return 0;
+
+		if (fallingElementElementType.equals(ElementType.values()[getNextElementTypeIndex(defenderElementType)]))
+			return -1;
+
+		return 1;
+	}
+	
+	private int getNextElementTypeIndex(ElementType elementType) {
+		int index = getElementTypeIndex(elementType);
+		int nextIndex = index +1;
+		if (nextIndex >= ElementType.values().length) 
+			nextIndex = 0;
+		return nextIndex;
+	}
+
 	private int getElementTypeIndex(ElementType elementType) {
 		ElementType[] values = ElementType.values();
 		for (int i = 0; i < values.length; i++) {

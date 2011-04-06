@@ -16,6 +16,7 @@ import com.gemserk.componentsengine.timers.Timer;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
+import com.gemserk.games.arcanedefenders.artemis.components.ChildComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpawnerComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpriteComponent;
@@ -77,7 +78,10 @@ public class EntityFactory {
 		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
 		entity.addComponent(new ElementTypeComponent(elementType));
 		
+		entity.setGroup(Tags.FallingElement);
+		
 		entity.refresh();
+		
 		return entity;
 	}
 	
@@ -93,7 +97,7 @@ public class EntityFactory {
 		return entity;
 	}
 	
-	public Entity typeEntity(Vector2 position, final Property<ElementType> elementType) {
+	public Entity typeEntity(Vector2 position, final Property<ElementType> elementType, Property<Entity> owner) {
 		Entity entity = world.createEntity();
 
 		Vector2 size = new Vector2(0.5f, 0.5f);
@@ -109,6 +113,9 @@ public class EntityFactory {
 				new SimpleProperty<BitmapFont>(defaultFont), //
 				new SimpleProperty<Color>(new Color(1f, 1f, 1f, 1f)) //
 		));
+		entity.addComponent(new ChildComponent(owner));
+		
+		entity.setGroup(Tags.ElementTypeDebugLabel);
 		
 		entity.refresh();
 		return entity;
