@@ -2,6 +2,8 @@ package com.gemserk.games.arcanedefenders;
 
 import java.util.Random;
 
+import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -12,24 +14,21 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
+import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
 import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
+import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
-import com.gemserk.games.arcanedefenders.entities.Spawner;
 
 public class GameScreen extends ScreenAdapter {
 
 	private final Game game;
 
-	World world = new World();
-
 	private SpriteBatch spriteBatch;
 
 	private BitmapFont font;
 
-	private float angle = 0f;
-
-	private com.artemis.World artemisWorld;
+	private com.artemis.World world;
 
 	private TextRendererSystem textRendererSystem;
 
@@ -37,12 +36,14 @@ public class GameScreen extends ScreenAdapter {
 
 	private MovementSystem movementSystem;
 
+	private SpawnerSystem spawnerSystem;
+
 	public GameScreen(Game game) {
 		this.game = game;
 
 		spriteBatch = new SpriteBatch();
 
-		Texture texture = new Texture(Gdx.files.internal("data/mage-512x512.png"));
+		final Texture texture = new Texture(Gdx.files.internal("data/mage-512x512.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
 		Texture fontTexture = new Texture(Gdx.files.internal("data/font.png"));
@@ -54,18 +55,20 @@ public class GameScreen extends ScreenAdapter {
 		textRendererSystem = new TextRendererSystem(spriteBatch);
 		spriteRendererSystem = new SpriteRendererSystem(spriteBatch);
 		movementSystem = new MovementSystem();
+		spawnerSystem = new SpawnerSystem();
 
-		artemisWorld = new com.artemis.World();
-		artemisWorld.getSystemManager().setSystem(textRendererSystem);
-		artemisWorld.getSystemManager().setSystem(spriteRendererSystem);
-		artemisWorld.getSystemManager().setSystem(movementSystem);
-		artemisWorld.getSystemManager().initializeAll();
+		world = new World();
+		world.getSystemManager().setSystem(textRendererSystem);
+		world.getSystemManager().setSystem(spriteRendererSystem);
+		world.getSystemManager().setSystem(movementSystem);
+		world.getSystemManager().setSystem(spawnerSystem);
+		world.getSystemManager().initializeAll();
 
-		EntityFactory entityFactory = new EntityFactory(artemisWorld, font);
+		final EntityFactory entityFactory = new EntityFactory(world, font);
 		entityFactory.fpsEntity();
 
 		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
+		final int height = Gdx.graphics.getHeight();
 		int n = 3;
 
 		int part = width / n;
@@ -76,33 +79,54 @@ public class GameScreen extends ScreenAdapter {
 
 		int xStart = part - midPart;
 
-		Random random = new Random();
+		final Random random = new Random();
 
 		for (int i = 0; i < n; i++) {
 
-			int x = xStart;
-			int y = 74;
-
-			System.out.println(x);
-
-			Sprite sprite = new Sprite(texture);
-			sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
-
-			Vector2 position = new Vector2(x, y);
-			Vector2 size = new Vector2(128, 128);
-			ElementType type = ElementType.Paper;
+			final int x = xStart;
+			final int y = 74;
 			
-			entityFactory.defender(position, size, sprite, type);
-			entityFactory.typeEntity(position, type);
+			// builds the defenders
+			{
+				Sprite sprite = new Sprite(texture);
+				sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
 
-			Spawner spawner = new Spawner(artemisWorld, entityFactory);
-			spawner.setPosition(new Vector2(x, height - 50));
-			spawner.setWorld(world);
-			spawner.setTexture(texture);
-			spawner.setRandom(random);
-			spawner.resetSpawnTimer();
+				final Vector2 position = new Vector2(x, y);
+				Vector2 size = new Vector2(128, 128);
+				ElementType type = ElementType.Paper;
 
-			world.spawners.add(spawner);
+				entityFactory.defender(position, size, sprite, type);
+				entityFactory.typeEntity(position, type);
+			}
+
+			// build the falling elements spawners
+			{
+				entityFactory.spawner(new EntityTemplate() {
+					@Override
+					public Entity build() {
+
+						Sprite sprite = new Sprite(texture);
+						sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
+
+						Vector2 size = new Vector2(64, 64);
+
+						ElementType type = randomElementType();
+
+						Vector2 position = new Vector2(x, height - y);
+
+						entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), type);
+						entityFactory.typeEntity(position, type);
+
+						return super.build();
+					}
+
+					public ElementType randomElementType() {
+						ElementType[] values = ElementType.values();
+						return values[random.nextInt(values.length)];
+					}
+
+				});
+			}
 
 			xStart += part;
 
@@ -123,19 +147,13 @@ public class GameScreen extends ScreenAdapter {
 
 		spriteBatch.begin();
 
-		for (int i = 0; i < world.spawners.size(); i++) {
-
-			Spawner spawner = world.spawners.get(i);
-			spawner.update(delta);
-
-		}
-
-		artemisWorld.loopStart();
-		artemisWorld.setDelta((int)(delta * 1000));
+		world.loopStart();
+		world.setDelta((int) (delta * 1000));
 
 		movementSystem.process();
 		spriteRendererSystem.process();
 		textRendererSystem.process();
+		spawnerSystem.process();
 
 		spriteBatch.end();
 	}

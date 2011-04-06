@@ -7,12 +7,14 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.values.IntValue;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
+import com.gemserk.games.arcanedefenders.artemis.components.SpawnerComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpriteComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
 
@@ -69,6 +71,13 @@ public class EntityFactory {
 		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
 		entity.addComponent(new ElementTypeComponent(new SimpleProperty<ElementType>(elementType)));
 		
+		entity.refresh();
+		return entity;
+	}
+	
+	public Entity spawner(EntityTemplate entityTemplate) {
+		Entity entity = world.createEntity();
+		entity.addComponent(new SpawnerComponent(new SimpleProperty<IntValue>(new IntValue(5000)), new SimpleProperty<EntityTemplate>(entityTemplate)));
 		entity.refresh();
 		return entity;
 	}
