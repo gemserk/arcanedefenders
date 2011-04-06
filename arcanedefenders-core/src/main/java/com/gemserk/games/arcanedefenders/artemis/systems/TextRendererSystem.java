@@ -6,6 +6,7 @@ import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
 
 public class TextRendererSystem extends EntitySystem {
@@ -14,7 +15,7 @@ public class TextRendererSystem extends EntitySystem {
 
 	@SuppressWarnings("unchecked")
 	public TextRendererSystem(SpriteBatch spriteBatch) {
-		super(TextComponent.class);
+		super(TextComponent.class, SpatialComponent.class);
 		this.spriteBatch = spriteBatch;
 	}
 
@@ -23,18 +24,19 @@ public class TextRendererSystem extends EntitySystem {
 		for (int i = 0; i < entities.size(); i++) {
 
 			Entity entity = entities.get(i);
+			
 			TextComponent textComponent = entity.getComponent(TextComponent.class);
-
-			if (textComponent == null)
-				continue;
+			SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
 
 			BitmapFont font = textComponent.getFont();
 			String text = textComponent.getText();
-			Vector2 position = textComponent.getPosition();
+			
+			Vector2 position = spatialComponent.getPosition();
+			Vector2 size = spatialComponent.getSize();
 
 			// TextBounds bounds = font.getBounds(text);
 
-			font.setScale(0.5f, 0.5f);
+			font.setScale(size.x, size.y);
 			font.setColor(textComponent.getColor());
 			font.draw(spriteBatch, text, position.x, position.y);
 

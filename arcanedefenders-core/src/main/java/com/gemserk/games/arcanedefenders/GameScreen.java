@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
+import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 import com.gemserk.games.arcanedefenders.entities.Defender;
 import com.gemserk.games.arcanedefenders.entities.FallingElement;
@@ -33,6 +34,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private TextRendererSystem textRendererSystem;
 
+	private SpriteRendererSystem spriteRendererSystem;
+
 	public GameScreen(Game game) {
 		this.game = game;
 
@@ -48,13 +51,15 @@ public class GameScreen extends ScreenAdapter {
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), fontSprite, false);
 
 		textRendererSystem = new TextRendererSystem(spriteBatch);
+		spriteRendererSystem = new SpriteRendererSystem(spriteBatch);
 
 		artemisWorld = new com.artemis.World();
 		artemisWorld.getSystemManager().setSystem(textRendererSystem);
+		artemisWorld.getSystemManager().setSystem(spriteRendererSystem);
 		artemisWorld.getSystemManager().initializeAll();
 
-		EntityFactory entityFactory = new EntityFactory(artemisWorld);
-		entityFactory.fpsEntity(font);
+		EntityFactory entityFactory = new EntityFactory(artemisWorld, font);
+		entityFactory.fpsEntity();
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
@@ -90,8 +95,8 @@ public class GameScreen extends ScreenAdapter {
 
 			world.defenders.add(defender);
 
-			Spawner spawner = new Spawner();
-			spawner.setPosition(new Vector2(x, height + 10));
+			Spawner spawner = new Spawner(artemisWorld, entityFactory);
+			spawner.setPosition(new Vector2(x, height - 50));
 			spawner.setWorld(world);
 			spawner.setTexture(texture);
 			spawner.setRandom(random);
@@ -156,24 +161,6 @@ public class GameScreen extends ScreenAdapter {
 			FallingElement fallingElement = world.fallingElements.get(i);
 
 			Vector2 position = fallingElement.getPosition();
-			Vector2 size = fallingElement.getSize();
-
-			Sprite sprite = fallingElement.getSprite();
-
-			sprite.setOrigin(size.x / 2, size.y / 2);
-
-			sprite.setRotation(180);
-			sprite.setSize(size.x, size.y);
-			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
-			sprite.draw(spriteBatch);
-
-			String renderType = getStringForElementType(fallingElement.getType());
-
-			font.setScale(0.5f, 0.5f);
-			font.setColor(1f, 1f, 1f, 1f);
-			font.draw(spriteBatch, renderType, position.x - font.getSpaceWidth() * 0.25f, position.y + font.getCapHeight() * 0.25f);
-
-			// update:
 
 			position.y -= 50 * delta;
 
@@ -182,6 +169,7 @@ public class GameScreen extends ScreenAdapter {
 		artemisWorld.loopStart();
 		artemisWorld.setDelta((int) delta * 1000);
 
+		spriteRendererSystem.process();
 		textRendererSystem.process();
 
 		spriteBatch.end();

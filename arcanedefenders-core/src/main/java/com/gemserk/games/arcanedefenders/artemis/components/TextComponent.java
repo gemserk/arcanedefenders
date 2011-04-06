@@ -3,7 +3,6 @@ package com.gemserk.games.arcanedefenders.artemis.components;
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.Vector2;
 import com.gemserk.componentsengine.properties.Property;
 
 public class TextComponent extends Component {
@@ -11,8 +10,6 @@ public class TextComponent extends Component {
 	private final Property<String> text;
 
 	private final Property<BitmapFont> font;
-
-	private final Property<Vector2> position;
 
 	private final Property<Color> color;
 	
@@ -32,10 +29,6 @@ public class TextComponent extends Component {
 		this.text.set(text);
 	}
 	
-	public Vector2 getPosition() {
-		return position.get();
-	}
-	
 	public Color getColor() {
 		return color.get();
 	}
@@ -44,10 +37,9 @@ public class TextComponent extends Component {
 		this.color.set(color);
 	}
 	
-	public TextComponent(Property<String> text, Property<BitmapFont> font, Property<Vector2> position, Property<Color> color) {
+	public TextComponent(Property<String> text, Property<BitmapFont> font, Property<Color> color) {
 		this.text = text;
 		this.font = font;
-		this.position = position;
 		this.color = color;
 	}
 

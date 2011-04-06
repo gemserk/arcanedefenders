@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.World;
+import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 
 public class Spawner {
 
@@ -23,6 +24,10 @@ public class Spawner {
 	private int maxTime;
 
 	private int minTime;
+
+	private final com.artemis.World artemisWorld;
+
+	private final EntityFactory entityFactory;
 
 	public void setPosition(Vector2 position) {
 		this.position = position;
@@ -44,8 +49,11 @@ public class Spawner {
 		this.random = random;
 	}
 
-	public Spawner() {
+	public Spawner(com.artemis.World artemisWorld, EntityFactory entityFactory) {
 
+		this.artemisWorld = artemisWorld;
+		this.entityFactory = entityFactory;
+		
 		minTime = 3000;
 		maxTime = 8000;
 
@@ -64,18 +72,31 @@ public class Spawner {
 			Sprite sprite = new Sprite(texture);
 			sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
 
+			Vector2 position = new Vector2(this.position);
+			Vector2 size = new Vector2(64, 64);
+			
+			ElementType type = randomElementType();
+			
 			FallingElement fallingElement = new FallingElement();
-			fallingElement.setPosition(new Vector2(this.position));
-			fallingElement.setSize(new Vector2(64, 64));
+			fallingElement.setPosition(position);
+			fallingElement.setSize(size);
 			fallingElement.setSprite(sprite);
-			fallingElement.setType(ElementType.Rock);
+			fallingElement.setType(type);
 
 			world.fallingElements.add(fallingElement);
+			
+			entityFactory.fallingElementEntity(position, size, sprite);
+			entityFactory.typeEntity(position, type);
 
 			resetSpawnTimer();
 
 		}
 
+	}
+	
+	public ElementType randomElementType() {
+		ElementType[] values = ElementType.values();
+		return values[random.nextInt(values.length)];
 	}
 
 }
