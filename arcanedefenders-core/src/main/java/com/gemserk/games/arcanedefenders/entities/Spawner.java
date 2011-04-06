@@ -5,6 +5,7 @@ import java.util.Random;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.World;
 
 public class Spawner {
@@ -67,6 +68,7 @@ public class Spawner {
 			fallingElement.setPosition(new Vector2(this.position));
 			fallingElement.setSize(new Vector2(64, 64));
 			fallingElement.setSprite(sprite);
+			fallingElement.setType(ElementType.Rock);
 
 			world.fallingElements.add(fallingElement);
 
