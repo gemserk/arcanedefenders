@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.ElementType;
+import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpriteComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
@@ -48,11 +49,12 @@ public class EntityFactory {
 		return entity;
 	}
 
-	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite) {
+	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity) {
 		Entity entity = world.createEntity();
 
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
 		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
+		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
 		
 		entity.refresh();
 		return entity;

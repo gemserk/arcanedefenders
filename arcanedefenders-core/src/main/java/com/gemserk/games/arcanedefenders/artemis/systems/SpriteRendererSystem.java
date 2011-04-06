@@ -28,9 +28,6 @@ public class SpriteRendererSystem extends EntitySystem {
 			SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
 			SpriteComponent spriteComponent = entity.getComponent(SpriteComponent.class);
 
-			// BitmapFont font = textComponent.getFont();
-			// String text = textComponent.getText();
-			//
 			Vector2 position = spatialComponent.getPosition();
 			Vector2 size = spatialComponent.getSize();
 
@@ -41,13 +38,6 @@ public class SpriteRendererSystem extends EntitySystem {
 			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
 			
 			sprite.draw(spriteBatch);
-
-			//
-			// // TextBounds bounds = font.getBounds(text);
-			//
-			// font.setScale(0.5f, 0.5f);
-			// font.setColor(textComponent.getColor());
-			// font.draw(spriteBatch, text, position.x, position.y);
 
 		}
 	}

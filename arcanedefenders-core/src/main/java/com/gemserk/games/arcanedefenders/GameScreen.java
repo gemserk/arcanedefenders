@@ -12,10 +12,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
+import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 import com.gemserk.games.arcanedefenders.entities.Defender;
-import com.gemserk.games.arcanedefenders.entities.FallingElement;
 import com.gemserk.games.arcanedefenders.entities.Spawner;
 
 public class GameScreen extends ScreenAdapter {
@@ -36,6 +36,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private SpriteRendererSystem spriteRendererSystem;
 
+	private MovementSystem movementSystem;
+
 	public GameScreen(Game game) {
 		this.game = game;
 
@@ -52,10 +54,12 @@ public class GameScreen extends ScreenAdapter {
 
 		textRendererSystem = new TextRendererSystem(spriteBatch);
 		spriteRendererSystem = new SpriteRendererSystem(spriteBatch);
+		movementSystem = new MovementSystem();
 
 		artemisWorld = new com.artemis.World();
 		artemisWorld.getSystemManager().setSystem(textRendererSystem);
 		artemisWorld.getSystemManager().setSystem(spriteRendererSystem);
+		artemisWorld.getSystemManager().setSystem(movementSystem);
 		artemisWorld.getSystemManager().initializeAll();
 
 		EntityFactory entityFactory = new EntityFactory(artemisWorld, font);
@@ -156,19 +160,10 @@ public class GameScreen extends ScreenAdapter {
 
 		}
 
-		for (int i = 0; i < world.fallingElements.size(); i++) {
-
-			FallingElement fallingElement = world.fallingElements.get(i);
-
-			Vector2 position = fallingElement.getPosition();
-
-			position.y -= 50 * delta;
-
-		}
-
 		artemisWorld.loopStart();
-		artemisWorld.setDelta((int) delta * 1000);
+		artemisWorld.setDelta((int)(delta * 1000));
 
+		movementSystem.process();
 		spriteRendererSystem.process();
 		textRendererSystem.process();
 
