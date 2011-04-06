@@ -13,8 +13,10 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
+import com.gemserk.games.arcanedefenders.artemis.systems.AllGameLogicSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
@@ -38,6 +40,8 @@ public class GameScreen extends ScreenAdapter {
 
 	private SpawnerSystem spawnerSystem;
 
+	private AllGameLogicSystem allGameLogicSystem;
+
 	public GameScreen(Game game) {
 		this.game = game;
 
@@ -56,12 +60,16 @@ public class GameScreen extends ScreenAdapter {
 		spriteRendererSystem = new SpriteRendererSystem(spriteBatch);
 		movementSystem = new MovementSystem();
 		spawnerSystem = new SpawnerSystem();
+		allGameLogicSystem = new AllGameLogicSystem();
 
 		world = new World();
+		
 		world.getSystemManager().setSystem(textRendererSystem);
 		world.getSystemManager().setSystem(spriteRendererSystem);
 		world.getSystemManager().setSystem(movementSystem);
 		world.getSystemManager().setSystem(spawnerSystem);
+		world.getSystemManager().setSystem(allGameLogicSystem);
+		
 		world.getSystemManager().initializeAll();
 
 		final EntityFactory entityFactory = new EntityFactory(world, font);
@@ -95,8 +103,10 @@ public class GameScreen extends ScreenAdapter {
 				Vector2 size = new Vector2(128, 128);
 				ElementType type = ElementType.Paper;
 
-				entityFactory.defender(position, size, sprite, type);
-				entityFactory.typeEntity(position, type);
+				SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
+
+				entityFactory.defender(position, size, sprite, elementType);
+				entityFactory.typeEntity(position, elementType);
 			}
 
 			// build the falling elements spawners
@@ -113,9 +123,11 @@ public class GameScreen extends ScreenAdapter {
 						ElementType type = randomElementType();
 
 						Vector2 position = new Vector2(x, height + y);
+						
+						SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
 
-						entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), type);
-						entityFactory.typeEntity(position, type);
+						entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), elementType);
+						entityFactory.typeEntity(position, elementType);
 
 						return super.build();
 					}
@@ -154,8 +166,10 @@ public class GameScreen extends ScreenAdapter {
 		spriteRendererSystem.process();
 		textRendererSystem.process();
 		spawnerSystem.process();
+		allGameLogicSystem.process();
 
 		spriteBatch.end();
+		
 	}
 
 	@Override

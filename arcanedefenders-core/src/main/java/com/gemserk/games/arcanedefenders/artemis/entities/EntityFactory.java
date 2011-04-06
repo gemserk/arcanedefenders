@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.values.IntValue;
 import com.gemserk.componentsengine.properties.AbstractProperty;
+import com.gemserk.componentsengine.properties.Property;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.componentsengine.timers.CountDownTimer;
 import com.gemserk.componentsengine.timers.Timer;
@@ -54,24 +55,27 @@ public class EntityFactory {
 		return entity;
 	}
 	
-	public Entity defender(Vector2 position, Vector2 size, Sprite sprite, ElementType elementType) {
+	public Entity defender(Vector2 position, Vector2 size, Sprite sprite, Property<ElementType> elementType) {
 		Entity entity = world.createEntity();
 
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
 		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
-		entity.addComponent(new ElementTypeComponent(new SimpleProperty<ElementType>(elementType)));
+		entity.addComponent(new ElementTypeComponent(elementType));
+
+		entity.setGroup(Tags.Defender);
 		
 		entity.refresh();
+		
 		return entity;
 	}
 
-	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity, ElementType elementType) {
+	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity, Property<ElementType> elementType) {
 		Entity entity = world.createEntity();
 
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
 		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
 		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
-		entity.addComponent(new ElementTypeComponent(new SimpleProperty<ElementType>(elementType)));
+		entity.addComponent(new ElementTypeComponent(elementType));
 		
 		entity.refresh();
 		return entity;
@@ -79,8 +83,6 @@ public class EntityFactory {
 	
 	public Entity spawner(EntityTemplate entityTemplate) {
 		Entity entity = world.createEntity();
-		
-		CountDownTimer countDownTimer = new CountDownTimer(0);
 		
 		entity.addComponent(new SpawnerComponent(new SimpleProperty<Timer>(new CountDownTimer(0, false)),
 				new SimpleProperty<IntValue>(new IntValue(3000)), 
@@ -91,7 +93,7 @@ public class EntityFactory {
 		return entity;
 	}
 	
-	public Entity typeEntity(Vector2 position, final ElementType type) {
+	public Entity typeEntity(Vector2 position, final Property<ElementType> elementType) {
 		Entity entity = world.createEntity();
 
 		Vector2 size = new Vector2(0.5f, 0.5f);
@@ -101,7 +103,7 @@ public class EntityFactory {
 				new AbstractProperty<String>() {
 					@Override
 					public String get() {
-						return getStringForElementType(type);
+						return getStringForElementType(elementType.get());
 					}
 				}, //
 				new SimpleProperty<BitmapFont>(defaultFont), //
