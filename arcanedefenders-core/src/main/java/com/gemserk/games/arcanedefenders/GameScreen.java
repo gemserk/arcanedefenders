@@ -15,7 +15,6 @@ import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
-import com.gemserk.games.arcanedefenders.entities.Defender;
 import com.gemserk.games.arcanedefenders.entities.Spawner;
 
 public class GameScreen extends ScreenAdapter {
@@ -86,18 +85,15 @@ public class GameScreen extends ScreenAdapter {
 
 			System.out.println(x);
 
-			Defender defender = new Defender();
-
 			Sprite sprite = new Sprite(texture);
 			sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
 
-			defender.setPosition(new Vector2(x, y));
-			defender.setSize(new Vector2(128, 128));
-			defender.setSprite(sprite);
-
-			defender.setType(ElementType.Paper);
-
-			world.defenders.add(defender);
+			Vector2 position = new Vector2(x, y);
+			Vector2 size = new Vector2(128, 128);
+			ElementType type = ElementType.Paper;
+			
+			entityFactory.defender(position, size, sprite, type);
+			entityFactory.typeEntity(position, type);
 
 			Spawner spawner = new Spawner(artemisWorld, entityFactory);
 			spawner.setPosition(new Vector2(x, height - 50));
@@ -127,32 +123,6 @@ public class GameScreen extends ScreenAdapter {
 
 		spriteBatch.begin();
 
-		for (int i = 0; i < world.defenders.size(); i++) {
-
-			Defender defender = world.defenders.get(i);
-
-			Vector2 position = defender.getPosition();
-			Vector2 size = defender.getSize();
-
-			Sprite sprite = defender.getSprite();
-
-			sprite.setOrigin(size.x / 2, size.y / 2);
-
-			sprite.setRotation(angle);
-			sprite.setSize(size.x, size.y);
-			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
-			sprite.draw(spriteBatch);
-
-			String renderType = getStringForElementType(defender.getType());
-
-			font.setScale(0.5f, 0.5f);
-			font.setColor(1f, 1f, 1f, 1f);
-			font.draw(spriteBatch, renderType, position.x - font.getSpaceWidth() * 0.25f, position.y + font.getCapHeight() * 0.25f);
-
-			angle += 0.1f;
-
-		}
-
 		for (int i = 0; i < world.spawners.size(); i++) {
 
 			Spawner spawner = world.spawners.get(i);
@@ -168,17 +138,6 @@ public class GameScreen extends ScreenAdapter {
 		textRendererSystem.process();
 
 		spriteBatch.end();
-	}
-
-	protected String getStringForElementType(ElementType type) {
-		switch (type) {
-		case Rock:
-			return "R";
-		case Paper:
-			return "P";
-		default:
-			return "S";
-		}
 	}
 
 	@Override

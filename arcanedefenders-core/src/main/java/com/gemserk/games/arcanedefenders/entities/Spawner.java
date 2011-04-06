@@ -77,7 +77,7 @@ public class Spawner {
 			
 			ElementType type = randomElementType();
 			
-			entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f));
+			entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), type);
 			entityFactory.typeEntity(position, type);
 
 			resetSpawnTimer();

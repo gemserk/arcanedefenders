@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.ElementType;
+import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpriteComponent;
@@ -48,13 +49,25 @@ public class EntityFactory {
 		entity.refresh();
 		return entity;
 	}
+	
+	public Entity defender(Vector2 position, Vector2 size, Sprite sprite, ElementType elementType) {
+		Entity entity = world.createEntity();
 
-	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity) {
+		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
+		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
+		entity.addComponent(new ElementTypeComponent(new SimpleProperty<ElementType>(elementType)));
+		
+		entity.refresh();
+		return entity;
+	}
+
+	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity, ElementType elementType) {
 		Entity entity = world.createEntity();
 
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
 		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
 		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
+		entity.addComponent(new ElementTypeComponent(new SimpleProperty<ElementType>(elementType)));
 		
 		entity.refresh();
 		return entity;
