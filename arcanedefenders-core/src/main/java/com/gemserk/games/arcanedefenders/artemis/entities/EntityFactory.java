@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.values.IntValue;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.SimpleProperty;
+import com.gemserk.componentsengine.timers.CountDownTimer;
+import com.gemserk.componentsengine.timers.Timer;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
@@ -77,8 +79,15 @@ public class EntityFactory {
 	
 	public Entity spawner(EntityTemplate entityTemplate) {
 		Entity entity = world.createEntity();
-		entity.addComponent(new SpawnerComponent(new SimpleProperty<IntValue>(new IntValue(5000)), new SimpleProperty<EntityTemplate>(entityTemplate)));
+		
+		CountDownTimer countDownTimer = new CountDownTimer(0);
+		
+		entity.addComponent(new SpawnerComponent(new SimpleProperty<Timer>(new CountDownTimer(0, false)),
+				new SimpleProperty<IntValue>(new IntValue(3000)), 
+				new SimpleProperty<IntValue>(new IntValue(8000)),
+				new SimpleProperty<EntityTemplate>(entityTemplate)));
 		entity.refresh();
+		
 		return entity;
 	}
 	

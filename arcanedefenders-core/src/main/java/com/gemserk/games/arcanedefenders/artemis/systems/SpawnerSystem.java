@@ -1,12 +1,18 @@
 package com.gemserk.games.arcanedefenders.artemis.systems;
 
+import java.util.Random;
+
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
+import com.gemserk.componentsengine.timers.CountDownTimer;
+import com.gemserk.componentsengine.timers.Timer;
 import com.gemserk.games.arcanedefenders.artemis.components.SpawnerComponent;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
 
 public class SpawnerSystem extends EntitySystem {
+	
+	private static Random random = new Random();
 
 	@SuppressWarnings("unchecked")
 	public SpawnerSystem() {
@@ -21,21 +27,18 @@ public class SpawnerSystem extends EntitySystem {
 
 			SpawnerComponent spawnerComponent = entity.getComponent(SpawnerComponent.class);
 
-			int spawnTime = spawnerComponent.getSpawnTime();
-			EntityTemplate entityTemplate = spawnerComponent.getEntityTemplate();
-			spawnTime -= world.getDelta();
+			Timer spawnTimer = spawnerComponent.getSpawnTimer();
 			
-			if (spawnTime <= 0) {
-				
-				System.out.println("SPAWN!!");
-				
+			EntityTemplate entityTemplate = spawnerComponent.getEntityTemplate();
+			
+			if (spawnTimer.update(world.getDelta())) { 
 				entityTemplate.build();
-				
-				spawnTime = 5000; 
-
 			}
-
-			spawnerComponent.setSpawnTime(spawnTime);
+			
+			if (!spawnTimer.isRunning()) {
+				int spawnTime = random.nextInt(spawnerComponent.getMaxTime() - spawnerComponent.getMinTime()) + spawnerComponent.getMinTime();
+				spawnerComponent.setSpawnTimer(new CountDownTimer(spawnTime, true));
+			}
 			
 		}
 	}

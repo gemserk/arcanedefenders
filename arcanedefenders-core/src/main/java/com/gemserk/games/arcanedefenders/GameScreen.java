@@ -74,8 +74,8 @@ public class GameScreen extends ScreenAdapter {
 		int part = width / n;
 		int midPart = part / 2;
 
-		System.out.println(part);
-		System.out.println(midPart);
+		// System.out.println(part);
+		// System.out.println(midPart);
 
 		int xStart = part - midPart;
 
@@ -112,7 +112,7 @@ public class GameScreen extends ScreenAdapter {
 
 						ElementType type = randomElementType();
 
-						Vector2 position = new Vector2(x, height - y);
+						Vector2 position = new Vector2(x, height + y);
 
 						entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), type);
 						entityFactory.typeEntity(position, type);

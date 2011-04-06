@@ -17,7 +17,7 @@
 	<properties>
 		<animation4j.version>0.0.10</animation4j.version>
 		<artemis.version>0.0.1-GEMSERK-SNAPSHOT</artemis.version>
-		<componentsengine.version>0.0.8</componentsengine.version>
+		<componentsengine.version>0.0.9-SNAPSHOT</componentsengine.version>
 	</properties>
 
 	<dependencies>
