@@ -2,10 +2,8 @@ package com.gemserk.games.arcanedefenders;
 
 import java.util.Random;
 
-import com.artemis.Entity;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
@@ -13,9 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.componentsengine.properties.AbstractProperty;
-import com.gemserk.componentsengine.properties.SimpleProperty;
-import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
+import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 import com.gemserk.games.arcanedefenders.entities.Defender;
 import com.gemserk.games.arcanedefenders.entities.FallingElement;
@@ -30,8 +26,6 @@ public class GameScreen extends ScreenAdapter {
 	private SpriteBatch spriteBatch;
 
 	private BitmapFont font;
-
-	private boolean showFps = true;
 
 	private float angle = 0f;
 
@@ -59,20 +53,8 @@ public class GameScreen extends ScreenAdapter {
 		artemisWorld.getSystemManager().setSystem(textRendererSystem);
 		artemisWorld.getSystemManager().initializeAll();
 
-		Entity fpsEntity = artemisWorld.createEntity();
-		fpsEntity.addComponent(new TextComponent( //
-				new AbstractProperty<String>() {
-					@Override
-					public String get() {
-						return "FPS: " + Gdx.graphics.getFramesPerSecond();
-					}
-				}, //
-				new SimpleProperty<BitmapFont>(font), //
-				new SimpleProperty<Vector2>(new Vector2(10, Gdx.graphics.getHeight() - 20)), //
-				new SimpleProperty<Color>(new Color(1f, 1f, 1f, 1f)) //
-				));
-
-		fpsEntity.refresh();
+		EntityFactory entityFactory = new EntityFactory(artemisWorld);
+		entityFactory.fpsEntity(font);
 
 		int width = Gdx.graphics.getWidth();
 		int height = Gdx.graphics.getHeight();
@@ -196,12 +178,6 @@ public class GameScreen extends ScreenAdapter {
 			position.y -= 50 * delta;
 
 		}
-
-		// if (showFps) {
-		// font.setScale(0.5f, 0.5f);
-		// font.setColor(1f, 1f, 1f, 1f);
-		// font.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 5, height - 20);
-		// }
 
 		artemisWorld.loopStart();
 		artemisWorld.setDelta((int) delta * 1000);
