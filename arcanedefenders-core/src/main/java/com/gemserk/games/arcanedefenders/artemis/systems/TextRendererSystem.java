@@ -8,12 +8,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
 
-public class FontRendererSystem extends EntitySystem {
+public class TextRendererSystem extends EntitySystem {
 
 	private final SpriteBatch spriteBatch;
 
 	@SuppressWarnings("unchecked")
-	public FontRendererSystem(SpriteBatch spriteBatch) {
+	public TextRendererSystem(SpriteBatch spriteBatch) {
 		super(TextComponent.class);
 		this.spriteBatch = spriteBatch;
 	}

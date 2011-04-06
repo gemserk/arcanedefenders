@@ -16,7 +16,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
-import com.gemserk.games.arcanedefenders.artemis.systems.FontRendererSystem;
+import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 import com.gemserk.games.arcanedefenders.entities.Defender;
 import com.gemserk.games.arcanedefenders.entities.FallingElement;
 import com.gemserk.games.arcanedefenders.entities.Spawner;
@@ -37,7 +37,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private com.artemis.World artemisWorld;
 
-	private FontRendererSystem fontRendererSystem;
+	private TextRendererSystem textRendererSystem;
 
 	public GameScreen(Game game) {
 		this.game = game;
@@ -53,10 +53,10 @@ public class GameScreen extends ScreenAdapter {
 		Sprite fontSprite = new Sprite(fontTexture);
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), fontSprite, false);
 
-		fontRendererSystem = new FontRendererSystem(spriteBatch);
+		textRendererSystem = new TextRendererSystem(spriteBatch);
 
 		artemisWorld = new com.artemis.World();
-		artemisWorld.getSystemManager().setSystem(fontRendererSystem);
+		artemisWorld.getSystemManager().setSystem(textRendererSystem);
 		artemisWorld.getSystemManager().initializeAll();
 
 		Entity fpsEntity = artemisWorld.createEntity();
@@ -206,7 +206,7 @@ public class GameScreen extends ScreenAdapter {
 		artemisWorld.loopStart();
 		artemisWorld.setDelta((int) delta * 1000);
 
-		fontRendererSystem.process();
+		textRendererSystem.process();
 
 		spriteBatch.end();
 	}
