@@ -12,17 +12,17 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.artemis.systems.HierarchySystem;
+import com.gemserk.commons.artemis.systems.MovementSystem;
+import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
+import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
+import com.gemserk.commons.artemis.systems.TextRendererSystem;
 import com.gemserk.commons.gdx.ScreenAdapter;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
 import com.gemserk.games.arcanedefenders.artemis.systems.AllGameLogicSystem;
-import com.gemserk.games.arcanedefenders.artemis.systems.HierarchySystem;
-import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
-import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
-import com.gemserk.games.arcanedefenders.artemis.systems.SpriteUpdateSystem;
-import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 
 public class GameScreen extends ScreenAdapter {
 

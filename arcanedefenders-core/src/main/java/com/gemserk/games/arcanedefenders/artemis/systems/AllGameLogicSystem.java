@@ -5,10 +5,10 @@ import com.artemis.EntitySystem;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.artemis.components.MovementComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
-import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
-import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.entities.Tags;
 
 public class AllGameLogicSystem extends EntitySystem {
