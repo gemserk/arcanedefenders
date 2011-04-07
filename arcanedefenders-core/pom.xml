@@ -18,6 +18,7 @@
 		<animation4j.version>0.0.10</animation4j.version>
 		<artemis.version>0.0.1-GEMSERK-SNAPSHOT</artemis.version>
 		<componentsengine.version>0.0.9-SNAPSHOT</componentsengine.version>
+		<commons.gdx.version>0.0.1-SNAPSHOT</commons.gdx.version>
 	</properties>
 
 	<dependencies>
@@ -58,13 +59,25 @@
 			<artifactId>artemis</artifactId>
 			<version>${artemis.version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.gemserk.componentsengine</groupId>
 			<artifactId>core</artifactId>
 			<version>${componentsengine.version}</version>
 		</dependency>
-		
+
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-core</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-artemis</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
+
 	</dependencies>
 
 </project>

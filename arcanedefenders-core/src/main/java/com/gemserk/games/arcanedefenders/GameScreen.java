@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.gdx.ScreenAdapter;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
