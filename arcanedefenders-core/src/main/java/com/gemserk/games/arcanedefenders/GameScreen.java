@@ -21,6 +21,7 @@ import com.gemserk.games.arcanedefenders.artemis.systems.HierarchySystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.MovementSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpriteRendererSystem;
+import com.gemserk.games.arcanedefenders.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 
 public class GameScreen extends ScreenAdapter {
@@ -44,6 +45,8 @@ public class GameScreen extends ScreenAdapter {
 	private AllGameLogicSystem allGameLogicSystem;
 
 	private HierarchySystem hierarchySystem;
+
+	private SpriteUpdateSystem spriteUpdateSystem;
 
 	public GameScreen(Game game) {
 		this.game = game;
@@ -69,15 +72,18 @@ public class GameScreen extends ScreenAdapter {
 		spawnerSystem = new SpawnerSystem();
 		allGameLogicSystem = new AllGameLogicSystem();
 		hierarchySystem = new HierarchySystem();
+		spriteUpdateSystem = new SpriteUpdateSystem();
 
 		world = new World();
 		
 		world.getSystemManager().setSystem(textRendererSystem);
-		world.getSystemManager().setSystem(spriteRendererSystem);
 		world.getSystemManager().setSystem(movementSystem);
 		world.getSystemManager().setSystem(spawnerSystem);
 		world.getSystemManager().setSystem(allGameLogicSystem);
 		world.getSystemManager().setSystem(hierarchySystem);
+
+		world.getSystemManager().setSystem(spriteUpdateSystem);
+		world.getSystemManager().setSystem(spriteRendererSystem);
 		
 		world.getSystemManager().initializeAll();
 
@@ -177,8 +183,10 @@ public class GameScreen extends ScreenAdapter {
 		world.loopStart();
 		world.setDelta((int) (delta * 1000));
 
-		movementSystem.process();
+		spriteUpdateSystem.process();
 		spriteRendererSystem.process();
+
+		movementSystem.process();
 		textRendererSystem.process();
 		spawnerSystem.process();
 		allGameLogicSystem.process();
