@@ -55,6 +55,10 @@ public class GameScreen extends ScreenAdapter {
 
 		Texture fontTexture = new Texture(Gdx.files.internal("data/font.png"));
 		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+		final Texture rockTexture = new Texture(Gdx.files.internal("data/rock-512x512.png"));
+		rockTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+
 
 		Sprite fontSprite = new Sprite(fontTexture);
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), fontSprite, false);
@@ -123,7 +127,7 @@ public class GameScreen extends ScreenAdapter {
 					@Override
 					public Entity build() {
 
-						Sprite sprite = new Sprite(texture);
+						Sprite sprite = new Sprite(rockTexture);
 						sprite.setOrigin(texture.getWidth() / 2, texture.getHeight() / 2);
 
 						Vector2 size = new Vector2(64, 64);

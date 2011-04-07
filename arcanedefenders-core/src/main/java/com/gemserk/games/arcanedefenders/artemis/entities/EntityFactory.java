@@ -1,5 +1,7 @@
 package com.gemserk.games.arcanedefenders.artemis.entities;
 
+import java.util.Random;
+
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
@@ -7,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.values.FloatValue;
 import com.gemserk.commons.values.IntValue;
 import com.gemserk.componentsengine.properties.AbstractProperty;
 import com.gemserk.componentsengine.properties.Property;
@@ -14,9 +17,9 @@ import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.componentsengine.timers.CountDownTimer;
 import com.gemserk.componentsengine.timers.Timer;
 import com.gemserk.games.arcanedefenders.ElementType;
+import com.gemserk.games.arcanedefenders.artemis.components.ChildComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.MovementComponent;
-import com.gemserk.games.arcanedefenders.artemis.components.ChildComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpatialComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpawnerComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpriteComponent;
@@ -27,6 +30,8 @@ public class EntityFactory {
 	private final World world;
 	
 	private final BitmapFont defaultFont;
+	
+	private final Random random = new Random();
 	
 	public EntityFactory(World world, BitmapFont defaultFont) {
 		this.world = world;
@@ -50,7 +55,7 @@ public class EntityFactory {
 				new SimpleProperty<Color>(new Color(1f, 1f, 1f, 1f)) //
 		));
 		
-		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(value)));
+		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(value), new SimpleProperty<FloatValue>(new FloatValue(0f))));
 		
 		entity.refresh();
 		return entity;
@@ -60,7 +65,7 @@ public class EntityFactory {
 		Entity entity = world.createEntity();
 
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
-		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
+		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size), new SimpleProperty<FloatValue>(new FloatValue(0f))));
 		entity.addComponent(new ElementTypeComponent(elementType));
 
 		entity.setGroup(Tags.Defender);
@@ -73,9 +78,19 @@ public class EntityFactory {
 	public Entity fallingElementEntity(Vector2 position, Vector2 size, Sprite sprite, Vector2 velocity, Property<ElementType> elementType) {
 		Entity entity = world.createEntity();
 
+		float angularVelocityF = random.nextFloat() * 20f + 20f;
+		
+		if (random.nextBoolean())
+			angularVelocityF = -angularVelocityF;
+		
+		FloatValue angularVelocity = new FloatValue(angularVelocityF);
+		
 		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
-		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
-		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity)));
+		entity.addComponent(new SpatialComponent(
+				new SimpleProperty<Vector2>(position), 
+				new SimpleProperty<Vector2>(size), 
+				new SimpleProperty<FloatValue>(new FloatValue(random.nextFloat()*360f))));
+		entity.addComponent(new MovementComponent(new SimpleProperty<Vector2>(velocity), new SimpleProperty<FloatValue>(angularVelocity)));
 		entity.addComponent(new ElementTypeComponent(elementType));
 		
 		entity.setGroup(Tags.FallingElement);
@@ -90,7 +105,7 @@ public class EntityFactory {
 		
 		entity.addComponent(new SpawnerComponent(new SimpleProperty<Timer>(new CountDownTimer(0, false)),
 				new SimpleProperty<IntValue>(new IntValue(3000)), 
-				new SimpleProperty<IntValue>(new IntValue(8000)),
+				new SimpleProperty<IntValue>(new IntValue(7000)),
 				new SimpleProperty<EntityTemplate>(entityTemplate)));
 		entity.refresh();
 		
@@ -102,7 +117,7 @@ public class EntityFactory {
 
 		Vector2 size = new Vector2(0.5f, 0.5f);
 		
-		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size)));
+		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size), new SimpleProperty<FloatValue>(new FloatValue(0f))));
 		entity.addComponent(new TextComponent( //
 				new AbstractProperty<String>() {
 					@Override

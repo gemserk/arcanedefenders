@@ -33,6 +33,7 @@ public class SpriteRendererSystem extends EntitySystem {
 
 			Sprite sprite = spriteComponent.getSprite();
 
+			sprite.setRotation(spatialComponent.getAngle());
 			sprite.setOrigin(size.x / 2, size.y / 2);
 			sprite.setSize(size.x, size.y);
 			sprite.setPosition(position.x - size.x / 2, position.y - size.y / 2);
