@@ -64,7 +64,7 @@ public class EntityFactory {
 	public Entity defender(Vector2 position, Vector2 size, Sprite sprite, Property<ElementType> elementType) {
 		Entity entity = world.createEntity();
 
-		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
+		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite), new SimpleProperty<IntValue>(new IntValue(0))));
 		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(size), new SimpleProperty<FloatValue>(new FloatValue(0f))));
 		entity.addComponent(new ElementTypeComponent(elementType));
 
@@ -85,7 +85,7 @@ public class EntityFactory {
 		
 		FloatValue angularVelocity = new FloatValue(angularVelocityF);
 		
-		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite)));
+		entity.addComponent(new SpriteComponent(new SimpleProperty<Sprite>(sprite),new SimpleProperty<IntValue>(new IntValue(1))));
 		entity.addComponent(new SpatialComponent(
 				new SimpleProperty<Vector2>(position), 
 				new SimpleProperty<Vector2>(size), 
