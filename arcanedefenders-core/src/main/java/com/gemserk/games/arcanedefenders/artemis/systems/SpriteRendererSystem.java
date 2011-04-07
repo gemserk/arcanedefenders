@@ -23,19 +23,18 @@ public class SpriteRendererSystem extends EntitySystem {
 
 	LayerComparator layerComparator = new LayerComparator();
 
-	private final SpriteBatch spriteBatch;
+	private SpriteBatch spriteBatch;
 
 	@SuppressWarnings("unchecked")
-	public SpriteRendererSystem(SpriteBatch spriteBatch) {
+	public SpriteRendererSystem() {
 		super(SpriteComponent.class);
-		this.spriteBatch = spriteBatch;
 	}
 
 	Array<Entity> orderedByLayerEntities = new Array<Entity>();
 
 	@Override
 	protected void processEntities(ImmutableBag<Entity> entities) {
-
+		
 		orderedByLayerEntities.clear();
 
 		for (int i = 0; i < entities.size(); i++) {
@@ -45,18 +44,22 @@ public class SpriteRendererSystem extends EntitySystem {
 
 		orderedByLayerEntities.sort(layerComparator);
 
+		spriteBatch.begin();
+		
 		for (int i = 0; i < orderedByLayerEntities.size; i++) {
 			Entity entity = orderedByLayerEntities.get(i);
 			SpriteComponent spriteComponent = entity.getComponent(SpriteComponent.class);
 			Sprite sprite = spriteComponent.getSprite();
 			sprite.draw(spriteBatch);
 		}
+		
+		spriteBatch.end();
 
 	}
 
 	@Override
 	public void initialize() {
-
+		spriteBatch = new SpriteBatch();
 	}
 
 	@Override

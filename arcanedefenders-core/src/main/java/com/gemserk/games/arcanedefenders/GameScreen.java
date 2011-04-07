@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.componentsengine.properties.SimpleProperty;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
@@ -27,8 +26,6 @@ import com.gemserk.games.arcanedefenders.artemis.systems.TextRendererSystem;
 public class GameScreen extends ScreenAdapter {
 
 	private final Game game;
-
-	private SpriteBatch spriteBatch;
 
 	private BitmapFont font;
 
@@ -51,8 +48,6 @@ public class GameScreen extends ScreenAdapter {
 	public GameScreen(Game game) {
 		this.game = game;
 
-		spriteBatch = new SpriteBatch();
-
 		final Texture texture = new Texture(Gdx.files.internal("data/mage-512x512.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
@@ -66,8 +61,8 @@ public class GameScreen extends ScreenAdapter {
 		Sprite fontSprite = new Sprite(fontTexture);
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), fontSprite, false);
 
-		textRendererSystem = new TextRendererSystem(spriteBatch);
-		spriteRendererSystem = new SpriteRendererSystem(spriteBatch);
+		textRendererSystem = new TextRendererSystem();
+		spriteRendererSystem = new SpriteRendererSystem();
 		movementSystem = new MovementSystem();
 		spawnerSystem = new SpawnerSystem();
 		allGameLogicSystem = new AllGameLogicSystem();
@@ -96,9 +91,6 @@ public class GameScreen extends ScreenAdapter {
 
 		int part = width / n;
 		int midPart = part / 2;
-
-		// System.out.println(part);
-		// System.out.println(midPart);
 
 		int xStart = part - midPart;
 
@@ -170,29 +162,21 @@ public class GameScreen extends ScreenAdapter {
 	@Override
 	public void render(float delta) {
 
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
-		int centerX = width / 2;
-		int centerY = height / 2;
-
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		spriteBatch.begin();
 
 		world.loopStart();
 		world.setDelta((int) (delta * 1000));
 
 		spriteUpdateSystem.process();
+
 		spriteRendererSystem.process();
+		textRendererSystem.process();
 
 		movementSystem.process();
-		textRendererSystem.process();
+		
 		spawnerSystem.process();
 		allGameLogicSystem.process();
 		hierarchySystem.process();
-
-		spriteBatch.end();
 		
 	}
 

@@ -11,16 +11,16 @@ import com.gemserk.games.arcanedefenders.artemis.components.TextComponent;
 
 public class TextRendererSystem extends EntitySystem {
 
-	private final SpriteBatch spriteBatch;
+	private SpriteBatch spriteBatch;
 
 	@SuppressWarnings("unchecked")
-	public TextRendererSystem(SpriteBatch spriteBatch) {
+	public TextRendererSystem() {
 		super(TextComponent.class, SpatialComponent.class);
-		this.spriteBatch = spriteBatch;
 	}
 
 	@Override
 	protected void processEntities(ImmutableBag<Entity> entities) {
+		spriteBatch.begin();
 		for (int i = 0; i < entities.size(); i++) {
 
 			Entity entity = entities.get(i);
@@ -41,11 +41,12 @@ public class TextRendererSystem extends EntitySystem {
 			font.draw(spriteBatch, text, position.x, position.y);
 
 		}
+		spriteBatch.end();
 	}
 
 	@Override
 	public void initialize() {
-
+		spriteBatch = new SpriteBatch();
 	}
 
 	@Override
