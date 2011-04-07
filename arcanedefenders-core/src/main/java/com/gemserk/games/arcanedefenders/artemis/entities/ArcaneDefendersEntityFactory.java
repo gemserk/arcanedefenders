@@ -24,13 +24,13 @@ import com.gemserk.games.arcanedefenders.ElementType;
 import com.gemserk.games.arcanedefenders.artemis.components.ElementTypeComponent;
 import com.gemserk.games.arcanedefenders.artemis.components.SpawnerComponent;
 
-public class EntityFactory {
+public class ArcaneDefendersEntityFactory {
 
 	private final World world;
 	
 	private final Random random = new Random();
 	
-	public EntityFactory(World world) {
+	public ArcaneDefendersEntityFactory(World world) {
 		this.world = world;
 	}
 	

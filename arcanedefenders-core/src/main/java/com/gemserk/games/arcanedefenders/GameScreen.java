@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.artemis.entities.EntityFactory;
 import com.gemserk.commons.artemis.systems.HierarchySystem;
 import com.gemserk.commons.artemis.systems.MovementSystem;
 import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
@@ -19,7 +20,7 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TextRendererSystem;
 import com.gemserk.commons.gdx.ScreenAdapter;
 import com.gemserk.componentsengine.properties.SimpleProperty;
-import com.gemserk.games.arcanedefenders.artemis.entities.EntityFactory;
+import com.gemserk.games.arcanedefenders.artemis.entities.ArcaneDefendersEntityFactory;
 import com.gemserk.games.arcanedefenders.artemis.entities.EntityTemplate;
 import com.gemserk.games.arcanedefenders.artemis.systems.AllGameLogicSystem;
 import com.gemserk.games.arcanedefenders.artemis.systems.SpawnerSystem;
@@ -82,10 +83,10 @@ public class GameScreen extends ScreenAdapter {
 		
 		world.getSystemManager().initializeAll();
 
-		com.gemserk.commons.artemis.entities.EntityFactory comonsEntityFactory = new com.gemserk.commons.artemis.entities.EntityFactory(world);
+		EntityFactory comonsEntityFactory = new EntityFactory(world);
 		comonsEntityFactory.fpsEntity(new SimpleProperty<BitmapFont>(font));
 
-		final EntityFactory entityFactory = new EntityFactory(world);
+		final ArcaneDefendersEntityFactory arcaneDefendersEntityFactory = new ArcaneDefendersEntityFactory(world);
 
 		int width = Gdx.graphics.getWidth();
 		final int height = Gdx.graphics.getHeight();
@@ -114,16 +115,16 @@ public class GameScreen extends ScreenAdapter {
 
 				SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
 
-				Entity defender = entityFactory.defender(position, size, sprite, elementType);
+				Entity defender = arcaneDefendersEntityFactory.defender(position, size, sprite, elementType);
 				
 				SimpleProperty<Entity> owner = new SimpleProperty<Entity>(defender);
 				
-				entityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
+				arcaneDefendersEntityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
 			}
 
 			// build the falling elements spawners
 			{
-				entityFactory.spawner(new EntityTemplate() {
+				arcaneDefendersEntityFactory.spawner(new EntityTemplate() {
 					@Override
 					public Entity build() {
 
@@ -138,11 +139,11 @@ public class GameScreen extends ScreenAdapter {
 						
 						SimpleProperty<ElementType> elementType = new SimpleProperty<ElementType>(type);
 
-						Entity fallingElement = entityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), elementType);
+						Entity fallingElement = arcaneDefendersEntityFactory.fallingElementEntity(position, size, sprite, new Vector2(0f, -50f), elementType);
 						
 						SimpleProperty<Entity> owner = new SimpleProperty<Entity>(fallingElement);
 						
-						entityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
+						arcaneDefendersEntityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
 
 						return super.build();
 					}
