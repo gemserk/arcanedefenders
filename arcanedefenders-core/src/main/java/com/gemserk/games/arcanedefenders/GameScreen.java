@@ -51,14 +51,13 @@ public class GameScreen extends ScreenAdapter {
 
 		final Texture texture = new Texture(Gdx.files.internal("data/mage-512x512.png"));
 		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		Texture fontTexture = new Texture(Gdx.files.internal("data/font.png"));
-		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 		
 		final Texture rockTexture = new Texture(Gdx.files.internal("data/rock-512x512.png"));
 		rockTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
-
+		Texture fontTexture = new Texture(Gdx.files.internal("data/font.png"));
+		fontTexture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
 		Sprite fontSprite = new Sprite(fontTexture);
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), fontSprite, false);
 
@@ -83,8 +82,10 @@ public class GameScreen extends ScreenAdapter {
 		
 		world.getSystemManager().initializeAll();
 
-		final EntityFactory entityFactory = new EntityFactory(world, font);
-		entityFactory.fpsEntity();
+		com.gemserk.commons.artemis.entities.EntityFactory comonsEntityFactory = new com.gemserk.commons.artemis.entities.EntityFactory(world);
+		comonsEntityFactory.fpsEntity(new SimpleProperty<BitmapFont>(font));
+
+		final EntityFactory entityFactory = new EntityFactory(world);
 
 		int width = Gdx.graphics.getWidth();
 		final int height = Gdx.graphics.getHeight();
@@ -117,7 +118,7 @@ public class GameScreen extends ScreenAdapter {
 				
 				SimpleProperty<Entity> owner = new SimpleProperty<Entity>(defender);
 				
-				entityFactory.typeEntity(position, elementType, owner);
+				entityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
 			}
 
 			// build the falling elements spawners
@@ -141,7 +142,7 @@ public class GameScreen extends ScreenAdapter {
 						
 						SimpleProperty<Entity> owner = new SimpleProperty<Entity>(fallingElement);
 						
-						entityFactory.typeEntity(position, elementType, owner);
+						entityFactory.typeEntity(position, elementType, owner, new SimpleProperty<BitmapFont>(font));
 
 						return super.build();
 					}

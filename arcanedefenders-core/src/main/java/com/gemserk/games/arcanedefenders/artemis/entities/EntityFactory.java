@@ -4,7 +4,6 @@ import java.util.Random;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -29,36 +28,10 @@ public class EntityFactory {
 
 	private final World world;
 	
-	private final BitmapFont defaultFont;
-	
 	private final Random random = new Random();
 	
-	public EntityFactory(World world, BitmapFont defaultFont) {
+	public EntityFactory(World world) {
 		this.world = world;
-		this.defaultFont = defaultFont;
-	}
-
-	public Entity fpsEntity() {
-		Entity entity = world.createEntity();
-		
-		Vector2 position = new Vector2(10, Gdx.graphics.getHeight() - 20);
-		Vector2 value = new Vector2(0.5f, 0.5f);
-		
-		entity.addComponent(new TextComponent( //
-				new AbstractProperty<String>() {
-					@Override
-					public String get() {
-						return "FPS: " + Gdx.graphics.getFramesPerSecond();
-					}
-				}, //
-				new SimpleProperty<BitmapFont>(defaultFont), //
-				new SimpleProperty<Color>(new Color(1f, 1f, 1f, 1f)) //
-		));
-		
-		entity.addComponent(new SpatialComponent(new SimpleProperty<Vector2>(position), new SimpleProperty<Vector2>(value), new SimpleProperty<FloatValue>(new FloatValue(0f))));
-		
-		entity.refresh();
-		return entity;
 	}
 	
 	public Entity defender(Vector2 position, Vector2 size, Sprite sprite, Property<ElementType> elementType) {
@@ -112,7 +85,7 @@ public class EntityFactory {
 		return entity;
 	}
 	
-	public Entity typeEntity(Vector2 position, final Property<ElementType> elementType, Property<Entity> owner) {
+	public Entity typeEntity(Vector2 position, final Property<ElementType> elementType, Property<Entity> owner, Property<BitmapFont> font) {
 		Entity entity = world.createEntity();
 
 		Vector2 size = new Vector2(0.5f, 0.5f);
@@ -125,7 +98,7 @@ public class EntityFactory {
 						return getStringForElementType(elementType.get());
 					}
 				}, //
-				new SimpleProperty<BitmapFont>(defaultFont), //
+				font, //
 				new SimpleProperty<Color>(new Color(1f, 1f, 1f, 1f)) //
 		));
 		entity.addComponent(new ChildComponent(owner));
