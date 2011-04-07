@@ -10,7 +10,7 @@ import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.gdx.SplashScreen;
 
-public class ArcaneDefendersGame extends Game {
+public class LibgdxGame extends Game {
 	
 	@Override
 	public void create() {
